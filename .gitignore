@@ -1,4 +1,5 @@
 root/bin/*
+root/sbin/*
 root/lib/*
 root/include/*
 src/
