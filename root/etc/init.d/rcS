@@ -1,0 +1,7 @@
+#!/bin/sh
+PATH=/bin
+echo Welcome
+/bin/mount -a
+/bin/hostname wargames
+/bin/ifup -a
+clear

@@ -1,0 +1,13 @@
+::sysinit:/etc/init.d/rcS
+# ::respawn:/bin/getty
+tty1::respawn:/bin/getty 115200 tty1
+tty2::respawn:/bin/getty 115200 tty2
+tty3::respawn:/bin/getty 115200 tty3
+tty4::respawn:/bin/getty 115200 tty4
+tty5::respawn:/bin/getty 115200 tty5
+tty6::respawn:/bin/getty 115200 tty6
+ttyS0::respawn:/bin/getty 115200 ttyS0
+::restart:/bin/init
+::ctrlaltdel:/bin/reboot
+::shutdown:/bin/umount -a -r
+::shutdown:/bin/swapoff -a
