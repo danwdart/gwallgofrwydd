@@ -1,5 +1,0 @@
-/dev/sda / btrfs noatime 0 0
-none /dev devtmpfs defaults 0 0
-none /proc proc defaults 0 0
-none /sys sysfs defaults 0 0
-none /tmp tmpfs size=64M 0 0
