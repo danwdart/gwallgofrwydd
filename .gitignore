@@ -1,2 +1,2 @@
-build/
-source/
+root/bin/*
+root/lib/*
