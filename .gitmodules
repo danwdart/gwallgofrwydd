@@ -1,0 +1,42 @@
+[submodule "src/binutils-gdb"]
+	path = src/binutils-gdb
+	url = git://sourceware.org/git/binutils-gdb.git
+[submodule "src/btrfs-progs"]
+	path = src/btrfs-progs
+	url = git@github.com:kdave/btrfs-progs.git
+[submodule "src/busybox"]
+	path = src/busybox
+	url = git://busybox.net/busybox.git
+[submodule "src/ddate"]
+	path = src/ddate
+	url = git@github.com:bo0ts/ddate.git
+[submodule "src/dropbear"]
+	path = src/dropbear
+	url = git@github.com:mkj/dropbear.git
+[submodule "src/file"]
+	path = src/file
+	url = git@github.com:file/file.git
+[submodule "src/gcc"]
+	path = src/gcc
+	url = git://gcc.gnu.org/git/gcc.git
+[submodule "src/linux"]
+	path = src/linux
+	url = https://github.com/torvalds/linux.git
+[submodule "src/man-pages"]
+	path = src/man-pages
+	url = git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
+[submodule "src/musl"]
+	path = src/musl
+	url = git://git.musl-libc.org/musl
+[submodule "src/tinycc"]
+	path = src/tinycc
+	url = git://repo.or.cz/tinycc.git
+[submodule "src/vim"]
+	path = src/vim
+	url = https://github.com/vim/vim.git
+[submodule "src/wayland"]
+	path = src/wayland
+	url = git://anongit.freedesktop.org/wayland/wayland
+[submodule "src/weston"]
+	path = src/weston
+	url = git://anongit.freedesktop.org/wayland/weston
