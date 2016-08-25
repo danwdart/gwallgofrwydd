@@ -18,9 +18,9 @@ Static builds (for now).
 
 Grab the sources
 
-`git submodule init
+`git submodule init`
 
-git submodule update`
+`git submodule update`
 
 Make the lot
 
