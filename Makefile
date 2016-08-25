@@ -5,16 +5,25 @@ CC=/usr/bin/gcc
 THREADS=6
 MAKE=/usr/bin/make -j${THREADS}
 
-all: busybox_install ddate_install git_install vim_install iana-etc initramfs
+all: busybox_install ddate_install git_install vim_install iana_etc_install linux_modules_install linux_install initramfs
 
 clean:
-	rm build/initramfs
+	rm -rf build/*
+
+linux:
+	cd src/linux && ${MAKE} defconfig mrproper all
+
+linux_modules_install: linux
+	cd src/linux && ${MAKE} INSTALL_MOD_PATH=${ROOT} install
+
+linux_install: linux
+	cp src/linux/arch/x86/boot/bzImage build/kernel
 
 busybox: busybox_copy_config
-	cd src/busybox && make DESTDIR=$(ROOT)
+	cd src/busybox && ${MAKE} DESTDIR=$(ROOT)
 
 busybox_install: busybox
-	cd src/busybox && make install
+	cd src/busybox && ${MAKE} install
 
 busybox_copy_config:
 	cp configs/busybox src/busybox/.config
