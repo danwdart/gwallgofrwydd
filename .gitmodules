@@ -43,3 +43,6 @@
 [submodule "src/git"]
 	path = src/git
 	url = git@github.com:git/git.git
+[submodule "src/iana-etc"]
+	path = src/iana-etc
+	url = git@github.com:sethwklein/iana-etc.git

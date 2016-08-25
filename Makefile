@@ -5,7 +5,7 @@ CC=/usr/bin/gcc
 THREADS=6
 MAKE=/usr/bin/make -j${THREADS}
 
-all: busybox_install ddate_install git_install vim_install initramfs
+all: busybox_install ddate_install git_install vim_install iana-etc initramfs
 
 clean:
 	rm build/initramfs
@@ -38,8 +38,12 @@ vim:
 vim_install: vim
 	cd src/vim && ${MAKE} CFLAGS=-static CCFLAGS=-static LDFLAGS=-static DESTDIR=${ROOT} install
 
+iana_etc_install:
+	cd src/iana-etc && ${MAKE} STRIP=yes DESTDIR=${ROOT} install
+
 initramfs:
 	cd root && find | cpio --owner=0:0 -oH newc | gzip > ../build/initramfs && cd ..
 
 qemu:
 	qemu-system-x86_64 -kernel build/kernel -initrd build/initramfs -append "root=/dev/ram0" -m 256
+
