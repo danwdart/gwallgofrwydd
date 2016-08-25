@@ -1,6 +1,7 @@
 root/bin/*
 root/sbin/*
 root/lib/*
+root/libexec/*
 root/include/*
-src/
+root/share/*
 build

@@ -40,3 +40,6 @@
 [submodule "src/weston"]
 	path = src/weston
 	url = git://anongit.freedesktop.org/wayland/weston
+[submodule "src/git"]
+	path = src/git
+	url = git@github.com:git/git.git
