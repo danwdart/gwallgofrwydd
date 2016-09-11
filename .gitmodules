@@ -1,45 +1,56 @@
-[submodule "src/binutils-gdb"]
-	path = src/binutils-gdb
-	url = git://sourceware.org/git/binutils-gdb.git
 [submodule "src/btrfs-progs"]
 	path = src/btrfs-progs
 	url = git@github.com:kdave/btrfs-progs.git
+    shallow = true
 [submodule "src/busybox"]
 	path = src/busybox
 	url = git://busybox.net/busybox.git
+    shallow = true
 [submodule "src/ddate"]
 	path = src/ddate
 	url = git@github.com:bo0ts/ddate.git
+    shallow = true
 [submodule "src/dropbear"]
 	path = src/dropbear
 	url = git@github.com:mkj/dropbear.git
+    shallow = true
 [submodule "src/file"]
 	path = src/file
 	url = git@github.com:file/file.git
+    shallow = true
 [submodule "src/linux"]
 	path = src/linux
 	url = https://github.com/torvalds/linux.git
+    shallow = true
 [submodule "src/man-pages"]
 	path = src/man-pages
 	url = git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
+    shallow = true
 [submodule "src/tinycc"]
 	path = src/tinycc
 	url = git://repo.or.cz/tinycc.git
+    shallow = true
 [submodule "src/vim"]
 	path = src/vim
 	url = https://github.com/vim/vim.git
+    shallow = true
 [submodule "src/git"]
 	path = src/git
 	url = git@github.com:git/git.git
+    shallow = true
 [submodule "src/iana-etc"]
 	path = src/iana-etc
 	url = git@github.com:sethwklein/iana-etc.git
+    shallow = true
 [submodule "src/hostap"]
 	path = src/hostap
 	url = git://w1.fi/hostap.git
+    shallow = true
 [submodule "src/openssl"]
 	path = src/openssl
 	url = https://github.com/openssl/openssl.git
+    shallow = true
 [submodule "src/xorg/util/modular"]
 	path = src/xorg/util/modular
 	url = git://anongit.freedesktop.org/git/xorg/util/modular
+    shallow = true
