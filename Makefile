@@ -9,20 +9,28 @@ PARTIMG = build/part.img
 PARTEDCMD = parted ${DISKIMG} -s -a minimal
 DISKSECTS = 204800
 PARTSECTS = 202720
-EFIBIOS = /usr/share/qemu-efi/QEMU_EFI.fd
+EFIBIOS = src/uefi.bin
 
-all: busybox_install ddate_install git_install vim_install iana_etc_install linux_modules_install linux_install initramfs
+all: busybox_install ddate_install git_install iana_etc_install linux
 
 clean:
-	rm -rf build/*
+	rm -rf build/* root/{bin,sbin,share,lib,libexec,include,etc/{protocols,services}}
 
-linux:
-	cd src/linux && ${MAKE} defconfig mrproper all
+linux: linux_modules_install linux_image_copy
 
-linux_modules_install: linux
-	cd src/linux && ${MAKE} INSTALL_MOD_PATH=${ROOT} install
+linux_copy_config:
+	cp configs/linux src/linux/.config
 
-linux_install: linux
+linux_modules: linux_copy_config
+	cd src/linux && ${MAKE} modules
+
+linux_modules_install: linux_modules
+	cd src/linux && ${MAKE} INSTALL_MOD_PATH=${ROOT} modules_install
+
+linux_image:
+	cd src/linux && ${MAKE} bzImage
+
+linux_image_copy: linux_image
 	cp src/linux/arch/x86/boot/bzImage build/kernel
 
 busybox: busybox_copy_config
@@ -56,16 +64,13 @@ vim_install: vim
 iana_etc_install:
 	cd src/iana-etc && ${MAKE} STRIP=yes DESTDIR=${ROOT} install
 
-initramfs:
-	cd root && find | cpio --owner=0:0 -oH newc | gzip > ../build/initramfs && cd ..
+#initramfs:
+#	cd root && find | cpio --owner=0:0 -oH newc | gzip > ../build/initramfs && cd ..
 
 qemu:
-	qemu-system-x86_64 -kernel build/kernel -initrd build/initramfs -append "root=/dev/ram0" -m 256
+	qemu-system-x86_64 -kernel build/kernel -append "root=/dev/ram0" -m 256
 
-grubimg:
-	grub-mkimage -Ox86_64-efi -o build/grub.efi
-
-bootimg: disk partdisk part copyfiles parttodisk
+bootimg: disk partdisk part copyfilestopart parttodisk
 
 disk:
 	dd if=/dev/zero of=build/disk.img bs=512 count=${DISKSECTS}
@@ -80,14 +85,10 @@ part:
 	dd if=/dev/zero of=${PARTIMG} bs=512 count=${PARTSECTS}
 	mkfs.vfat -F32 ${PARTIMG} # mformat -i ${PARTIMG} -h 32 -t 32 -n 64 -c 1
 
-copyfiles: grubimg
-	mcopy -i ${PARTIMG}	build/initramfs build/kernel ::/
+copyfilestopart:
 	mmd -i ${PARTIMG} ::/EFI
 	mmd -i ${PARTIMG} ::/EFI/BOOT
-	mmd -i ${PARTIMG} ::/boot
-	mmd -i ${PARTIMG} ::/boot/grub
-	mcopy -i ${PARTIMG} build/grub.efi ::/EFI/BOOT/BOOTX64.EFI
-	mcopy -i ${PARTIMG} configs/grub.cfg ::/boot/grub
+	mcopy -i ${PARTIMG} build/kernel ::/EFI/BOOT/BOOTX64.EFI
 
 parttodisk:
 	dd if=${PARTIMG} of=${DISKIMG} bs=512 seek=2048 count=${PARTSECTS} conv=notrunc
