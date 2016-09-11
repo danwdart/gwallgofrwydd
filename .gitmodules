@@ -46,3 +46,12 @@
 [submodule "src/iana-etc"]
 	path = src/iana-etc
 	url = git@github.com:sethwklein/iana-etc.git
+[submodule "src/hostap"]
+	path = src/hostap
+	url = git://w1.fi/hostap.git
+[submodule "src/openssl"]
+	path = src/openssl
+	url = https://github.com/openssl/openssl.git
+[submodule "src/xorg/util/modular"]
+	path = src/xorg/util/modular
+	url = git://anongit.freedesktop.org/git/xorg/util/modular
