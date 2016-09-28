@@ -8,6 +8,8 @@ DISKIMG = build/disk.img
 PARTIMG = build/part.img
 PARTEDCMD = parted ${DISKIMG} -s -a minimal
 DISKSECTS = 204800
+STARTSECT = 2048
+ENDSECT = 204766
 PARTSECTS = 202720
 EFIBIOS = src/uefi.bin
 
@@ -64,6 +66,9 @@ vim_install: vim
 iana_etc_install:
 	cd src/iana-etc && ${MAKE} STRIP=yes DESTDIR=${ROOT} install
 
+tcc:
+
+
 #initramfs:
 #	cd root && find | cpio --owner=0:0 -oH newc | gzip > ../build/initramfs && cd ..
 
@@ -76,10 +81,7 @@ disk:
 	dd if=/dev/zero of=build/disk.img bs=512 count=${DISKSECTS}
 
 partdisk:
-	echo -e "o\ny\nn\n\n\n\nef00\nw\ny\n" | gdisk build/disk.img
-	# ${PARTEDCMD} mklabel gpt
-	# ${PARTEDCMD} mkpart EFI FAT16 2048s # 93716s
-	# ${PARTEDCMD} toggle 1 boot
+	sgdisk -o -n 1:${STARTSECT}:${ENDSECT} -t 1:ef00 -c 1:"EFI System" -p build/disk.img
 
 part:
 	dd if=/dev/zero of=${PARTIMG} bs=512 count=${PARTSECTS}
