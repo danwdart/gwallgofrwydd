@@ -2,3 +2,13 @@ devtmpfs /dev devtmpfs noatime 0 0
 sysfs /sys sysfs noatime 0 0
 proc /proc proc noatime 0 0
 tmpfs /tmp tmpfs noatime 0 0
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/ddate,workdir=/work
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/git,workdir=/work
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/node,workdir=/work
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/tcc,workdir=/work
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/vim,workdir=/work
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/ddate,workdir=/work
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/git,workdir=/work
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/node,workdir=/work
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/tcc,workdir=/work
+overlayfs / overlayfs lowerdir=/,upperdir=/apps/vim,workdir=/work

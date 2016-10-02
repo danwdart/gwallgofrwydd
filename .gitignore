@@ -4,6 +4,7 @@ root/lib/*
 root/libexec/*
 root/include/*
 root/share/*
+root/apps/*
 root/etc/protocols
 root/etc/services
 build

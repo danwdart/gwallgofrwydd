@@ -41,6 +41,7 @@
 [submodule "src/iana-etc"]
 	path = src/iana-etc
 	url = git@github.com:sethwklein/iana-etc.git
+	branch = history-test
     shallow = true
 [submodule "src/hostap"]
 	path = src/hostap
@@ -54,3 +55,6 @@
 	path = src/xorg/util/modular
 	url = git://anongit.freedesktop.org/git/xorg/util/modular
     shallow = true
+[submodule "src/node"]
+	path = src/node
+	url = git@github.com:nodejs/node.git
