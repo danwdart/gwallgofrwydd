@@ -1,6 +1,7 @@
 #!/bin/sh
-PATH=/bin
+PATH=/bin:/sbin
 echo Welcome
+#/sbin/syslogd
 /bin/mount -a
 /bin/hostname wargames
 /bin/ifup -a
