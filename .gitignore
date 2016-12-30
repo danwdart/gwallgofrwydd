@@ -8,3 +8,4 @@ root/apps/*
 root/etc/protocols
 root/etc/services
 build
+disk
