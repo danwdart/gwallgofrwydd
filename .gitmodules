@@ -20,7 +20,8 @@
     shallow = true
 [submodule "src/linux"]
 	path = src/linux
-	url = https://github.com/torvalds/linux.git
+	url = git@github.com:ckolivas/linux.git
+	branch = 4.14-ck
     shallow = true
 [submodule "src/man-pages"]
 	path = src/man-pages
