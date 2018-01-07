@@ -1,44 +1,49 @@
 SHELL = /bin/sh
 PROJROOT = $(realpath .)
 SRC = $(PROJROOT)/src
+ROOT_SKEL = $(PROJROOT)/root-skel
 ROOT = $(PROJROOT)/root
 EFIROOT = $(PROJROOT)/efiroot
+BUILD = $(PROJROOT)/build
 CC = /usr/bin/gcc
 THREADS = 12
 MAKE = /usr/bin/make -j$(THREADS)
-DISKIMG = build/disk.img
-PARTIMG = build/part.img
+DISKIMG = $(BUILD)/disk.img
+PARTIMG = $(BUILD)/part.img
 DISKSECTS = 204800
 STARTSECT = 2048
 ENDSECT = 204766
 PARTSECTS = 202720
-EFIBIOS = $(SRCPATH)/uefi.bin
+EFIBIOS = $(SRC)/uefi.bin
 BOOTEFIPATH = EFI/BOOT
 BOOTEFINAME = BOOTX64.EFI
 BOOTEFIFILE = $(BOOTEFIPATH)/$(BOOTEFINAME)
 
 all: fs_build linux
 
-fs_build: fs_skeleton apps_install symlinks
+fs_build: $(ROOT)/.fs_ready $(ROOT)/.apps_ready
 
 fs_skeleton:
-	cd root && mkdir -p dev home proc root sys tmp var/log var/tmp	
+	cp -r $(ROOT_SKEL) $(ROOT)
+	mkdir -p $(BUILD) $(ROOT)/{dev,home,proc,root,sys,tmp,var/{log,tmp}}
+	touch $(ROOT)/.fs_ready
 
 libs_install: openssl_install
 
-apps_install: busybox_install ddate_install git_install tcc_install iana_etc_install
+apps_install: $(ROOT)/bin/busybox $(ROOT)/apps/ddate $(ROOT)/apps/git $(ROOT)/apps/tcc $(ROOT)/etc/protocols
+	touch $(ROOT)/.apps_ready
 
 clean:
-	rm -rf build/* root/{bin,sbin,share,lib,libexec,include,etc/{protocols,services}}
+	rm -rf $(EFIROOT) $(BUILD) $(ROOT)
 
 # Kernel
-	
-linux: linux_modules_install linux_image_copy initramfs
+
+linux: $(ROOT)/lib/modules $(BUILD)/kernel $(BUILD)/initramfs
 
 linux_copy_config:
-	cp configs/linux $(SRC)/linux/.config
+		cp configs/linux $(SRC)/linux/.config
 
-linux_modules: linux_copy_config
+linux_modules: $(SRC)/linux/.config
 	cd $(SRC)/linux && $(MAKE) modules
 
 linux_modules_install: linux_modules
@@ -47,19 +52,19 @@ linux_modules_install: linux_modules
 linux_image:
 	cd $(SRC)/linux && $(MAKE) bzImage
 
-linux_image_copy: linux_image
-	cp $(SRC)/linux/arch/x86/boot/bzImage build/kernel
+linux_image_copy: $(SRC)/linux/arch/x86/boot/bzImage
+	cp $(SRC)/linux/arch/x86/boot/bzImage $(BUILD)/kernel
 
 initramfs: fs_build
-	cd $(ROOT) && find | cpio --owner=0:0 -oH newc | gzip > ../build/initramfs && cd ..
+	cd $(ROOT) && find | cpio --owner=0:0 -oH newc | gzip > $(BUILD)/initramfs && cd ..
 
 # Libraries
 openssl:
 	cd $(SRC)/openssl && ./config -static -fPIC --prefix=/ && $(MAKE) all
-	
+
 openssl_install: openssl
 	cd $(SRC)/openssl && $(MAKE) CFLAGS=-static CCFLAGS=-static LDFLAGS=-static MAKEFLAGS=-static DESTDIR=$(ROOT)/libs/openssl install
-	
+
 # Software
 
 # busybox
@@ -107,7 +112,7 @@ iana_etc_install:
 tcc:
 	cd $(SRC)/tinycc && ./configure --prefix=/ && $(MAKE) CFLAGS=-static CCFLAGS=-static LDFLAGS=-static
 
-tcc_install:
+tcc_install: tcc
 	cd $(SRC)/tinycc && $(MAKE) DESTDIR=$(ROOT)/apps/tcc install
 
 # node
@@ -115,22 +120,14 @@ tcc_install:
 node:
 	cd $(SRC)/node && ./configure --prefix=/ --fully-static && $(MAKE)
 
-node_install:
+node_install: node
 	cd $(SRC)/node && $(MAKE) DESTDIR=$(ROOT)/apps/node install
 
-# Packaging
-
-symlinks:
-	cd root/apps && for d in *; do cd $d; find -type d | cut -d . -f 2 | xargs echo mkdir -p; \
-	for f in $(find -type f | cut -d . -f 2); do echo ln -sv $$PWD/$$f $(ROOT)$$f; done; \
-	cd ..; \
-	done
-
 # Filesystem
-createefifs: linux
+createefifs: $(BUILD)/kernel
 	mkdir -p $(EFIROOT)/$(BOOTEFIPATH)
-	cp build/kernel $(EFIROOT)/$(BOOTEFIFILE)
-	
+	cp $(BUILD)/kernel $(EFIROOT)/$(BOOTEFIFILE)
+
 # UEFI Boot image compilation
 bootimg: makedisk partdisk makepart copytopart parttodisk
 
@@ -144,22 +141,21 @@ makepart:
 	dd if=/dev/zero of=$(PARTIMG) bs=512 count=$(PARTSECTS)
 	mkfs.vfat -F32 $(PARTIMG)
 
-copytopart: makepart linux
+copytopart: makepart $(BUILD)/kernel
 	mmd -i $(PARTIMG) ::/EFI
 	mmd -i $(PARTIMG) ::/EFI/BOOT
-	mcopy -i $(PARTIMG) build/kernel ::/EFI/BOOT/BOOTX64.EFI
+	mcopy -i $(PARTIMG) $(BUILD)/kernel ::/EFI/BOOT/BOOTX64.EFI
 
 parttodisk: partdisk copytopart
 	dd if=$(PARTIMG) of=$(DISKIMG) bs=512 seek=2048 count=$(PARTSECTS) conv=notrunc
 
 # Emulation
 
-qemuraw: linux initramfs 
-	qemu-system-x86_64 -kernel build/kernel -initrd build/initramfs -append "root=/dev/ram0" -m 512
-	
-qemuefi: bootimg
-	qemu-system-x86_64 -cpu qemu64 -bios $(EFIBIOS) -drive file=$(DISKIMG),format=raw -m 512
+qemuraw: $(BUILD)/kernel $(BUILD)/initramfs
+	qemu-system-x86_64 -kernel $(BUILD)/kernel -initrd $(BUILD)/initramfs -append "root=/dev/ram0" -m 512 -smp 4
 
-qemuefifat: createefifs
-	qemu-system-x86_64 -cpu qemu64 -bios $(EFIBIOS) file=fat:rw:$(EFIROOT) -m 512
+qemuefi: $(EFIBIOS) bootimg
+	qemu-system-x86_64 -cpu qemu64 -bios $(EFIBIOS) -drive file=$(DISKIMG),format=raw -m 512 -smp 4
 
+qemuefifat: $(EFIBIOS) $(EFIROOT)/$(BOOTEFIFILE)
+	qemu-system-x86_64 -cpu qemu64 -bios $(EFIBIOS) -drive file=fat:rw:$(EFIROOT) -m 512 -smp 4
