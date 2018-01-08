@@ -33,7 +33,7 @@ $(ROOT)/.fs_ready:
 
 libs_install: openssl_install
 
-apps_install: $(ROOT)/bin/busybox $(ROOT)/apps/ddate $(ROOT)/apps/git $(ROOT)/apps/tcc $(ROOT)/etc/protocols $(ROOT)/apps/vim $(ROOT)/apps/node
+apps_install: $(ROOT)/.fs_ready $(ROOT)/bin/busybox $(ROOT)/apps/ddate $(ROOT)/apps/git $(ROOT)/apps/tcc $(ROOT)/etc/protocols $(ROOT)/apps/vim $(ROOT)/apps/node
 
 # Kernel
 $(SRC)/linux/.config:
@@ -45,13 +45,13 @@ $(SRC)/linux/kernel/configs.ko: $(SRC)/linux/.config
 $(ROOT)/lib/modules: $(SRC)/linux/kernel/configs.ko
 	cd $(SRC)/linux && $(MAKE) INSTALL_MOD_PATH=$(ROOT) modules_install
 
-$(SRC)/linux/arch/x86/boot/bzImage: $(ROOT)/.fs_ready apps_install $(ROOT)/lib/modules
+$(SRC)/linux/arch/x86/boot/bzImage: apps_install $(ROOT)/lib/modules
 	cd $(SRC)/linux && $(MAKE) bzImage
 
 $(BUILD)/kernel: $(SRC)/linux/arch/x86/boot/bzImage
 	cp $(SRC)/linux/arch/x86/boot/bzImage $(BUILD)/kernel
 
-#$(BUILD)/initramfs: $(ROOT)/.fs_ready apps_install
+#$(BUILD)/initramfs: apps_install
 #	cd $(ROOT) && find | cpio --owner=0:0 -oH newc | gzip > $(BUILD)/initramfs && cd ..
 
 # Libraries
