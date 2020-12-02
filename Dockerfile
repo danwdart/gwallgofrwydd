@@ -8,8 +8,7 @@ COPY . /build/
 
 WORKDIR /build/
 
-RUN git submodule init && \
-	git submodule update
+RUN git submodule update --init --recursive --depth=1
 
 RUN make apps_install
 
