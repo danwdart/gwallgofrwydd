@@ -56,6 +56,3 @@
 	path = src/xorg/util/modular
 	url = git://anongit.freedesktop.org/git/xorg/util/modular
     shallow = true
-[submodule "src/node"]
-	path = src/node
-	url = git@github.com:nodejs/node.git
