@@ -56,3 +56,5 @@
 	path = src/xorg/util/modular
 	url = git://anongit.freedesktop.org/git/xorg/util/modular
     shallow = true
+[submodule "busybox"]
+	url = https://git.busybox.net/busybox~
