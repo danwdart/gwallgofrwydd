@@ -27,10 +27,6 @@
 	path = src/man-pages
 	url = git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
     shallow = true
-[submodule "src/tinycc"]
-	path = src/tinycc
-	url = git://repo.or.cz/tinycc.git
-    shallow = true
 [submodule "src/vim"]
 	path = src/vim
 	url = https://github.com/vim/vim.git
