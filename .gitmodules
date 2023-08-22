@@ -2,10 +2,6 @@
 	path = src/btrfs-progs
 	url = git@github.com:kdave/btrfs-progs.git
     shallow = true
-[submodule "src/busybox"]
-	path = src/busybox
-	url = git://busybox.net/busybox.git
-    shallow = true
 [submodule "src/ddate"]
 	path = src/ddate
 	url = git@github.com:bo0ts/ddate.git
