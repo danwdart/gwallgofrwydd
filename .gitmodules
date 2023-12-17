@@ -44,9 +44,5 @@
 	path = src/openssl
 	url = https://github.com/openssl/openssl.git
     shallow = true
-[submodule "src/xorg/util/modular"]
-	path = src/xorg/util/modular
-	url = git://anongit.freedesktop.org/git/xorg/util/modular
-    shallow = true
 [submodule "busybox"]
 	url = https://git.busybox.net/busybox~
